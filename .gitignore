@@ -1,0 +1,46 @@
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+__pycache__
+
+# vim files
+*.swp
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+
+# PyCharm
+.idea
+
+#vscode
+.vscode
+
+# PyPi
+.pypirc
+
+
+_build/
+venv/
+tmp/
+
+# backup file
+.bak
+
+#examples
+test*
+*.csv

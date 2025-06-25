@@ -1,0 +1,11 @@
+# Sensor settings
+
+#serial_port = "/dev/ttyUSB0"
+serial_port = "/dev/tty.usbserial-2110"
+recording_delay = 1
+
+# streaming settings  set to zero or to "" to disable
+output_file = "output.csv"
+display = 1
+lsl = 1
+lsl_name = "KrakowForceSensor"
