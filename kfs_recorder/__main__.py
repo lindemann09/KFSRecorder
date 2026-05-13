@@ -2,7 +2,7 @@ import sys
 from time import sleep
 
 import readkeys
-from pylsl import StreamInfo, StreamOutlet, local_clock
+from pylsl import StreamInfo, StreamOutlet
 
 from . import ForceSensorSerial, __version__
 from ._settings import Settings

@@ -1,14 +1,19 @@
-from . import _timer
+from time import perf_counter
+
+
+def get_time():
+    """Get high-resolution time stamp (float) """
+    return perf_counter()
 
 
 class TSData(object):
     """Time stamped data"""
 
-    _init_time_high_res = _timer.get_time()
+    _init_time_high_res = get_time()
 
     def __init__(self, val, time:int|None=None):
         if time is None:
-            self.time = int((_timer.get_time() - TSData._init_time_high_res) * 1000)
+            self.time = int((get_time() - TSData._init_time_high_res) * 1000)
         else:
             self.time = time
         self.val = val
