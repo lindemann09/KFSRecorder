@@ -14,5 +14,9 @@ dependencies =  ["pyserial>=3.5",
                 "readkeys>=1.0", "pylsl>=1.17"]
 
 
+[project.scripts]
+kfs_recorder = "kfs_recorder.__main__:run"
+
+
 #[project.urls]
 #Source = "https://github.com/lindemann09/XXX"

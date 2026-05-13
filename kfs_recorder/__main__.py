@@ -4,7 +4,7 @@ from time import sleep
 import readkeys
 from pylsl import StreamInfo, StreamOutlet, local_clock
 
-from . import ForceSensor, __version__
+from . import ForceSensorSerial, __version__
 from ._settings import Settings
 
 
@@ -19,7 +19,7 @@ def run():
     else:
         outlet = None
 
-    sensor = ForceSensor(cfg.serial_port, filename=cfg.output_file)
+    sensor = ForceSensorSerial(cfg.serial_port, filename=cfg.output_file)
     sensor.start()
     readkeys.flush()
 
