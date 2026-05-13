@@ -8,4 +8,3 @@ __author__ = 'Oliver Lindemann <lindemann@essb.eur.nl>'
 
 from ._sensor_serial import ForceSensorSerial
 from ._time_stamped_data import TSData, TSFloat, TSInt
-from ._timer import get_time
