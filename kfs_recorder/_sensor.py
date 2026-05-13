@@ -2,6 +2,8 @@ import atexit
 from datetime import datetime
 from typing import List
 
+from pylsl import StreamOutlet
+
 from ._time_stamped_data import TSData, TSFloat, TSInt
 
 
@@ -10,22 +12,22 @@ class ForceSensor(object):
 
     def __init__(self,
                  filename: str | None = None,
-                 init_time: int | None = None) -> None:
+                 init_time: int | None = None,
+                 lsl_stream: StreamOutlet | None = None) -> None:
 
         if isinstance(init_time, int):
             TSData.set_init_time(init_time)
 
-        self._poll_cache: bytes = b""
-        self._n_returned_data = 0
         self._baseline = 0
         self._data: List[TSFloat] = []
         self._trigger: List[TSInt] = []
+        self._lsl_stream = lsl_stream
 
         self.filename = filename
         if filename is not None and len(filename) > 0:
             now = datetime.now().strftime("%Y-%m-%d %H:%M")
             with open(filename, "w", encoding="utf-8") as fl:
-                fl.write(f"# Krakow sensor force: {now}\n")
+                fl.write(f"# Force sensor data: {now}\n")
 
         atexit.register(self.save)
 
@@ -40,14 +42,22 @@ class ForceSensor(object):
     def n_samples(self):
         return len(self._data)
 
-    def send_trigger(self, tr:int):
-        self._trigger.append(TSInt(tr))
+    def new_trigger(self, tr:int):
+        dat = TSInt(tr)
+        self._trigger.append(dat)
+        if isinstance(self._lsl_stream, StreamOutlet):
+            self._lsl_stream.push_sample([dat.val])
 
-    def add_data(self, val: float, consider_baseline: bool = True):
+    def new_data(self, val: float, consider_baseline: bool = True):
+
         if consider_baseline:
-            self._data.append(TSFloat(val - self._baseline))
+            dat = TSFloat(val - self._baseline)
         else:
-            self._data.append(TSFloat(val))
+            dat = TSFloat(val)
+
+        self._data.append(dat)
+        if isinstance(self._lsl_stream, StreamOutlet):
+            self._lsl_stream.push_sample([dat.val])
 
     def save(self):
         if self.filename is not None:

@@ -2,6 +2,7 @@ import atexit
 from typing import List
 
 import serial
+from pylsl import StreamOutlet
 
 from ._sensor import ForceSensor
 from ._time_stamped_data import TSFloat
@@ -13,9 +14,10 @@ class ForceSensorSerial(ForceSensor):
     def __init__(self, port,
                  baudrate=115200,
                  filename: str | None = None,
-                 init_time: int | None = None) -> None:
+                 init_time: int | None = None,
+                 lsl_stream: StreamOutlet | None = None) -> None:
 
-        super().__init__(filename=filename, init_time=init_time)
+        super().__init__(filename=filename, init_time=init_time, lsl_stream=lsl_stream)
         self.port = port
         self.baudrate = baudrate
         self.serial_port = None
@@ -53,7 +55,7 @@ class ForceSensorSerial(ForceSensor):
                     if len(self._poll_cache) > 0:
                         dat = self._poll_cache + dat
                         self._poll_cache = b"" # clear
-                    self.add_data(float(dat.decode()), consider_baseline=True)
+                    self.new_data(float(dat.decode()), consider_baseline=True)
             else:
                 # no data in cue: return data
                 if len(self._data) > self._n_returned_data:

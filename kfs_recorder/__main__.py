@@ -13,13 +13,15 @@ def run():
     print(cfg.dict)
 
     if cfg.lsl: # LSL support
-        info = StreamInfo(cfg.lsl_name, 'Force', channel_count=2, nominal_srate=100)
+        info = StreamInfo(cfg.lsl_name, 'Force',
+                          channel_count=2, nominal_srate=100)
         outlet = StreamOutlet(info)
         print("LSL stream created: ", info.name())
     else:
         outlet = None
 
-    sensor = ForceSensorSerial(cfg.serial_port, filename=cfg.output_file)
+    sensor = ForceSensorSerial(cfg.serial_port, filename=cfg.output_file,
+                               lsl_stream=outlet)
     sensor.start()
     readkeys.flush()
 
@@ -36,10 +38,6 @@ def run():
     while True:
         data = sensor.poll()
         if len(data) > 0:
-            if isinstance(outlet, StreamOutlet):
-                for x in data:
-                    outlet.push_sample([x.time, x.val])
-
             if cfg.display :
                 x = data[-1]
                 sys.stdout.write(f"trigger: {x.csv()}      \r")
@@ -48,7 +46,7 @@ def run():
         if k == "b":
             sensor.set_baseline()
         elif k == "t":
-            sensor.send_trigger(255)
+            sensor.new_trigger(255)
         elif k == "q":
             break
 
